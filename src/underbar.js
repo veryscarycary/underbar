@@ -102,11 +102,11 @@
   _.uniq = function(array) {
   	var unique = [];
 
-    for (var i=0; i<array.length;i++) {
-      if (!unique.includes(array[i])) {
-        unique.push(array[i]);
+    _.each(array, function(item) {
+      if (!unique.includes(item)) {
+        unique.push(item);
       }
-    }
+    });
     return unique;
   };
 
@@ -116,6 +116,13 @@
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
+    var mapped = [];
+
+    _.each(collection, function (item) {
+    	mapped.push(iterator(item));
+    })
+
+    return mapped;
   };
 
   /*
