@@ -80,11 +80,11 @@
   _.filter = function(collection, test) {
   	var filtered = [];
 
-    for (var i=0;i<collection.length;i++ ) {
-      if (test(collection[i])) {
-        filtered.push(collection[i]);
-      };
-    }
+    _.each(collection, function(item) {
+    	if (test(item)) {
+        filtered.push(item);
+      }
+    });
 
     return filtered;
   };
@@ -103,7 +103,7 @@
   	var unique = [];
 
     _.each(array, function(item) {
-      if (!unique.includes(item)) {
+      if (_.indexOf(unique, item) === -1) {
         unique.push(item);
       }
     });
@@ -118,8 +118,8 @@
     // the members, it also maintains an array of results.
     var mapped = [];
 
-    _.each(collection, function (item) {
-    	mapped.push(iterator(item));
+    _.each(collection, function (item, i, collection) {
+    	mapped.push(iterator(item, i, collection));
     })
 
     return mapped;
@@ -163,7 +163,17 @@
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
-  _.reduce = function(collection, iterator, accumulator) {
+  _.reduce = function(collection, iterator, accumulator = 'noAccumulatorSet') {
+
+  	_.each(collection, function(item) {
+  		if (accumulator === 'noAccumulatorSet') {
+  			accumulator = item;
+  		} else {
+  			accumulator = iterator(accumulator, item);
+  		}
+  	});
+
+  	return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
