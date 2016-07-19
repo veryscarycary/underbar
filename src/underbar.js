@@ -367,11 +367,11 @@
 
     if (typeof functionOrKey === 'function') {
       _.each(collection, function(item) {
-        results.push(functionOrKey.call(item));
+        results.push(functionOrKey.call(item, item));
       });
     } else {
       _.each(collection, function(item) {
-        results.push(functionOrKey.apply(item, args));
+        results.push(item[functionOrKey].apply(item, args));
       });
     }
     return results;
@@ -383,6 +383,13 @@
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
 
+    if (typeof iterator === 'function') {
+      return collection.sort(iterator);
+    } else {
+      var sortedProps = _.map(collection, function (object) {
+
+      }).sort();
+    }
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -462,5 +469,6 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    setTimeout(func, wait);
   };
 }());
