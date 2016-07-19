@@ -120,7 +120,7 @@
 
     _.each(collection, function (item, i, collection) {
     	mapped.push(iterator(item, i, collection));
-    })
+    });
 
     return mapped;
   };
@@ -146,19 +146,19 @@
   // Reduces an array or object to a single value by repetitively calling
   // iterator(accumulator, item) for each item. accumulator should be
   // the return value of the previous iterator call.
-  //  
+  //
   // You can pass in a starting value for the accumulator as the third argument
   // to reduce. If no starting value is passed, the first element is used as
   // the accumulator, and is never passed to the iterator. In other words, in
   // the case where a starting value is not passed, the iterator is not invoked
   // until the second element, with the first element as its second argument.
-  //  
+  //
   // Example:
   //   var numbers = [1,2,3];
   //   var sum = _.reduce(numbers, function(total, number){
   //     return total + number;
   //   }, 0); // should be 6
-  //  
+  //
   //   var identity = _.reduce([5], function(total, number){
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
@@ -311,7 +311,7 @@
   		}
 
   		return memoized[arg];
-  	}
+  	};
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -363,6 +363,18 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    var results = [];
+
+    if (typeof functionOrKey === 'function') {
+      _.each(collection, function(item) {
+        results.push(functionOrKey.call(item));
+      });
+    } else {
+      _.each(collection, function(item) {
+        results.push(functionOrKey.apply(item, args));
+      });
+    }
+    return results;
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -370,6 +382,7 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -385,11 +398,23 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    result = result || [];
+
+    _.each(nestedArray, function(item) {
+      if (Array.isArray(item)) {
+        _.flatten(item, result);
+      } else {
+        result.push(item);
+      }
+    });
+
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    return _.map(arguments, function(array) {return _.flatten(array);});
   };
 
   // Take the difference between one array and a number of other arrays.
