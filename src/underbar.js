@@ -414,7 +414,6 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
-    debugger;
     var results = [];
     var args = arguments;
 
@@ -432,6 +431,17 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var difference = Array.prototype.slice.call(array);
+    var args = Array.prototype.slice.apply(arguments).slice(1);
+    var toDelete = _.flatten(args);
+
+    _.each(toDelete, function(item) {
+      if (_.indexOf(difference, item) !== -1) {
+        difference.splice(_.indexOf(difference, item), 1);
+      }
+    });
+
+    return difference;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
