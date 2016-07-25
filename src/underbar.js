@@ -493,11 +493,27 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
+    var timeLeft = 0;
+    var previous = 0;
 
-    return function() {
-      var now = new Date().getMilliseconds();
-      var remaining = wait - now;
+    return function callIt () {
+      var now = Number(new Date().getSeconds() + "." +
+      new Date().getMilliseconds()) * 1000;
+      if (previous) {timeLeft = timeLeft - (now - previous);}
+      if (timeLeft <= 0) {
+        timeLeft = wait;
+        previous = now;
+        return func.apply(this, arguments);
+      }
+
+      previous = now;
     };
 
+
   };
+
+  var car = _.throttle( function(){ console.log(new Date().getSeconds()); }, 3000 );
+  car();
+  car();
+  car();
 }());
