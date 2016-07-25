@@ -363,18 +363,17 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
-    var results = [];
+    var method;
 
-    if (typeof functionOrKey === 'function') {
-      _.each(collection, function(item) {
-        results.push(functionOrKey.call(item, item));
-      });
-    } else {
-      _.each(collection, function(item) {
-        results.push(item[functionOrKey].apply(item, args));
-      });
-    }
-    return results;
+    return _.map(collection, function(item) {
+      if (typeof functionOrKey === 'string') {
+        method = item[functionOrKey];
+      } else {
+        method = functionOrKey;
+      }
+
+      return method.apply(item, args);
+    });
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -382,13 +381,34 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-
     if (typeof iterator === 'function') {
-      return collection.sort(iterator);
+      return _.pluck(_.map(collection, function (value, i, collection) {
+        return {
+          value: value,
+          i: i,
+          order: iterator(value, i, collection)
+        };
+      }).sort(function(left, right) {
+        var a = left.order;
+        var b = right.order;
+        if (a > b) {return 1;}
+        if (a < b) {return -1;}
+        if (a === b) {return 0;}
+      }), 'value');
     } else {
-      var sortedProps = _.map(collection, function (object) {
-
-      }).sort();
+      return _.pluck(_.map(collection, function (value, i, collection) {
+        return {
+          value: value,
+          i: i,
+          order: i[iterator]
+        };
+      }).sort(function(left, right) {
+        var a = left.order;
+        var b = right.order;
+        if (a > b) {return 1;}
+        if (a < b) {return -1;}
+        if (a === b) {return 0;}
+      }), 'value');
     }
   };
 
@@ -469,6 +489,11 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function(func, wait) {
-    setTimeout(func, wait);
+
+    return function() {
+      var now = new Date().getMilliseconds();
+      var remaining = wait - now;
+    };
+
   };
 }());
