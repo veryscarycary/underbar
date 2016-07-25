@@ -391,6 +391,8 @@
       }).sort(function(left, right) {
         var a = left.order;
         var b = right.order;
+        if (a === undefined) {return 1;}
+        if (b === undefined) {return -1;}
         if (a > b) {return 1;}
         if (a < b) {return -1;}
         if (a === b) {return 0;}
@@ -400,11 +402,13 @@
         return {
           value: value,
           i: i,
-          order: i[iterator]
+          order: value[iterator]
         };
       }).sort(function(left, right) {
         var a = left.order;
         var b = right.order;
+        if (a === undefined) {return 1;}
+        if (b === undefined) {return -1;}
         if (a > b) {return 1;}
         if (a < b) {return -1;}
         if (a === b) {return 0;}
